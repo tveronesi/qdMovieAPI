@@ -62,7 +62,7 @@ class MovieDetail(BaseModel):
 class MovieInfo(BaseModel):
 
     imdbId: str
-    imdb_id: int
+    imdb_id: str
     title: str
     year: int | None = None
 
@@ -71,7 +71,7 @@ class MovieInfo(BaseModel):
     def from_movie_info(cls, data:dict):
         return cls(
             imdbId=data['id'],
-            imdb_id=int(data['id'].replace('tt', '')),
+            imdb_id=str(data['id'].replace('tt', '')),
             title=data['titleNameText'],
             year=data.get('titleReleaseText',None),
 
