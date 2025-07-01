@@ -124,6 +124,13 @@ If you prefer to run the application without Docker, you can do so by following 
     ```
 4. The API will be available at `http://127.0.0.1:5000`.
 
+## PIP install `qd_imdb_service`
+There is not yet been a release of the `qd_imdb_service` library on PyPI, but you can install it directly from the source code:
+
+```sh
+pip install git+https://github.com/tveronesi/qdMovieAPI.git
+```
+
 ## License
 Copyright (C)  2025 T.Veronesi
 
