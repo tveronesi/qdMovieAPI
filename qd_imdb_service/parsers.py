@@ -9,12 +9,13 @@ def parse_json_movie(raw_json) -> MovieDetail:
         return {"error": "No data found for the given IMDb ID"}
 
     data['imdbId'] = mainColumnData['id']
-    data['imdb_id'] = int(data['imdbId'].replace('tt', ''))
+    data['imdb_id'] = data['imdbId'].replace('tt', '') # movie id without 'tt'
     data['url'] = f"https://www.imdb.com/title/{data['imdbId']}/"
     data['title'] = aboveTheFoldData['originalTitleText']['text']
+    data['kind'] = mainColumnData['titleType']['id']
     data['metacritic_rating'] = mainColumnData['metacritic']['metascore']['score'] if mainColumnData[
         'metacritic'] else None
-    data['cover'] = aboveTheFoldData['primaryImage']['url']
+    data['cover_url'] = aboveTheFoldData['primaryImage']['url']
     data['plot'] = mainColumnData['plot']['plotText']['plainText'] if mainColumnData['plot'] else None
     release_date = mainColumnData['releaseDate']
     data['year'] = aboveTheFoldData['releaseYear']['year']
@@ -41,8 +42,10 @@ def parse_json_movie(raw_json) -> MovieDetail:
         'release_date'] = f"{release_date['year']}-{release_date['month']:02d}-{release_date['day']:02d}" if release_date else None
 
     certificates = mainColumnData['certificates']['edges']
-    data['certificates'] = [{cert['node']['country']['id']: [cert['node']['country']['text'], cert['node']['rating']]}
-                            for cert in certificates if cert['node']['country']]
+    data['certificates'] = {
+        cert['node']['country']['id']: (cert['node']['country']['text'], cert['node']['rating'])
+        for cert in certificates if cert['node']['country']
+    }
 
     directors_dump = mainColumnData['directorsPageTitle'][0]['credits']
     data['directors'] = []
@@ -88,6 +91,9 @@ def parse_json_movie(raw_json) -> MovieDetail:
 
     laboratories_dump = mainColumnData['technicalSpecifications']['laboratories']['items']
     data['laboratories'] = [lab['laboratory'] for lab in laboratories_dump]
+
+    colorations_dump = mainColumnData['technicalSpecifications']['colorations']['items']
+    data['colorations'] = [color['text'] for color in colorations_dump]
 
     cameras_dump = mainColumnData['technicalSpecifications']['cameras']['items']
     data['cameras'] = [camera['camera'] for camera in cameras_dump]
