@@ -25,18 +25,35 @@ class Person(BaseModel):
 
                    })
 
+    @classmethod
+    def from_cast(cls, data: dict):
+        return cls(**
+                   {
+                       'name': data['node']['name']['nameText']['text'],
+                       'id': data['node']['name']['id'],
+                       'url': f"https://www.imdb.com/name/{data['node']['name']['id']}"
+                   })
+
+
 
 class Movie(BaseModel):
     imdbId: str
+    imdb_id: int
     title: str
+    url: str = ""
     cover: str
     release_date: str | None = None
     certificates: list[dict[str, list[str]]] = []
     directors: list[Person] = []
+    cast: list[Person] = []
     year: int | None = None
     duration: int | None = None
     country_codes: list[str] = []
     rating: float | None = None
+    votes: int | None = None
+    trailers: list[str] = []
+    genres: list[str] = []
+    interests : list[str] = []
 
 
 
@@ -48,28 +65,48 @@ def parse_json(raw_json) -> Movie:
         return {"error": "No data found for the given IMDb ID"}
 
     data['imdbId'] = mainColumnData['id']
+    data['imdb_id'] = int(data['imdbId'].replace('tt', ''))
+    data['url'] = f"https://www.imdb.com/title/{data['imdbId']}/"
     data['title'] = aboveTheFoldData['originalTitleText']['text']
     data['cover'] = aboveTheFoldData['primaryImage']['url']
     release_date = mainColumnData['releaseDate']
     data['year'] = aboveTheFoldData['releaseYear']['year']
     data['duration'] = aboveTheFoldData['runtime']['seconds'] / 60 if aboveTheFoldData['runtime'] else None
-    data['trailer']
+    data['rating'] = mainColumnData['ratingsSummary']['aggregateRating']
+    data['votes'] = mainColumnData['ratingsSummary']['voteCount']
+    data['genres'] = [genre['genre']['text'] for genre in mainColumnData['titleGenres']['genres']]
 
-    data[
-        'release_date'] = f"{release_date['year']}-{release_date['month']:02d}-{release_date['day']:02d}" if release_date else None
-    movie = Movie.model_validate(data)
+    trailers = mainColumnData['primaryVideos']['edges']
+    data['trailers'] = [
+    f"https://www.imdb.com/video/{trailer['node']['id']}" for trailer in trailers if trailer['node']['id']
+    ]
+
+    interests = mainColumnData['interests']['edges']
+    data['interests'] = [interest['node']['primaryText']['text'] for interest in interests ]
+
+    data['release_date'] = f"{release_date['year']}-{release_date['month']:02d}-{release_date['day']:02d}" if release_date else None
+
     certificates = mainColumnData['certificates']['edges']
    # data['certificates'] = [{cert['node']['country']['id']: [cert['node']['country']['text'], cert['node']['rating']]}
     #                        for cert in certificates if cert['node']['country']]
 
    # movie.certificates = data['certificates']
 
+
     directors_dump = mainColumnData['directorsPageTitle'][0]['credits']
     data['directors'] = []
     for director in directors_dump:
         d = Person.from_directors(director)
         data['directors'].append(d)
-    movie.directors = data['directors']
+
+    cast_dump = aboveTheFoldData['castPageTitle']['edges']
+    data['cast'] = []
+    for cast_member in cast_dump:
+        c = Person.from_cast(cast_member)
+        data['cast'].append(c)
+
+    movie = Movie.model_validate(data)
+    # movie.directors = data['directors']
 
     return movie
 
