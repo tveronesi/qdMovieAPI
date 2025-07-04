@@ -1,7 +1,7 @@
 # qd_imdb_api
 
 This project provides a "quick and dirty" API service to retrieve movie information from IMDB.
-It uses the imdbinfo package to fetch movie details based on the IMDB ID or title.
+It uses the [imdbinfo](https://github.com/tveronesi/imdbinfo) package to fetch movie details based on the IMDB ID or title.
 
 ## Usage
 
