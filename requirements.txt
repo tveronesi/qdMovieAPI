@@ -1,2 +1,2 @@
-git+git@github.com:tveronesi/imdbinfo.git
+git+https://github.com/tveronesi/imdbinfo.git
 Flask==3.0.3
