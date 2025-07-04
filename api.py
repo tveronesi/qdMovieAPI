@@ -1,12 +1,12 @@
 # python
 from flask import Flask, jsonify, request
-from qd_imdb_service.services import fetch_movie_details, search_title
+from imdbinfo.services import  search_title, get_movie
 
 app = Flask(__name__)
 
 @app.route("/imdb/<string:imdb_id>")
 def get_imdb_data(imdb_id):
-    movie_data = fetch_movie_details(imdb_id)
+    movie_data = get_movie(imdb_id)
     if not movie_data:
         return jsonify({"error": "Movie not found"}), 404
 
@@ -22,7 +22,7 @@ def search_imdb():
     if not results:
         return jsonify({"error": "No results found"}), 404
 
-    return jsonify(results)
+    return jsonify(results.model_dump())
 
 
 if __name__ == "__main__":
