@@ -6,17 +6,17 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "qd_imdb_service"
 version = "0.1.0"
-description = "A short description"
+description = "A Python service for querying IMDb data"
 readme = "README.md"
-license = { file = "LICENSE" }
+license = { file = "LICENSE.txt" }
 authors = [
-    { name = "Your Name", email = "you@example.com" }
+    { name = "@tveronesi", email = "you@example.com" }
 ]
 dependencies = [
   "flask",
-        "requests",
-        "lxml",
-        "pydantic"
+    "requests",
+    "lxml",
+    "pydantic"
 ]
 
 [tool.setuptools]
