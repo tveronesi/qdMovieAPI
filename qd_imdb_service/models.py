@@ -5,13 +5,15 @@ class Person(BaseModel):
     name: str
     id: str
     url: str
+    job: str | None = None
 
     @classmethod
     def from_directors(cls, data: dict):
         return cls(
             name=data['name']['nameText']['text'],
             id=data['name']['id'],
-            url=f"https://www.imdb.com/name/{data['name']['id']}"
+            url=f"https://www.imdb.com/name/{data['name']['id']}",
+            job='Director'
         )
 
     @classmethod
@@ -19,7 +21,16 @@ class Person(BaseModel):
         return cls(
             name=data['node']['name']['nameText']['text'],
             id=data['node']['name']['id'],
-            url=f"https://www.imdb.com/name/{data['node']['name']['id']}"
+            url=f"https://www.imdb.com/name/{data['node']['name']['id']}",
+            job='Cast'
+        )
+    @classmethod
+    def from_search(cls, data: dict):
+        return cls(
+            name=data['displayNameText'],
+            id=data['id'],
+            url=f"https://www.imdb.com/name/{data['id']}",
+            job=data['knownForJobCategory']
         )
 
 
@@ -66,7 +77,7 @@ class MovieInfo(BaseModel):
     title: str
     cover: str | None = None
     url: str | None = None
-    year: int | None = None
+    year: str | None = None
 
 
     @classmethod
