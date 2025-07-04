@@ -35,15 +35,17 @@ class Person(BaseModel):
 
 
 class MovieDetail(BaseModel):
-    imdbId: str
-    imdb_id: int
+    imdbId: str # movie id with 'tt'
+    imdb_id: str # movie id without 'tt'
     title: str
+    kind: str | None = None
     url: str = ""
-    cover: str
+    cover_url: str
     plot: str | None = None
     release_date: str | None = None
     languages: list[str] = []
-    certificates: list[dict[str, list[str]]] = []
+    certificates: dict[str, tuple[str, str]] = {}
+    directors: dict[str, dict] = {}
     directors: list[Person] = []
     cast: list[Person] = []
     year: int | None = None
@@ -64,6 +66,7 @@ class MovieDetail(BaseModel):
     printed_formats: list[str] = []
     negative_formats: list[str] = []
     laboratories: list[str] = []
+    colorations: list[str] = []
     cameras: list[str] = []
     aspect_ratios: list[tuple[str, str]] = []
     summaries: list[str] = []
@@ -75,9 +78,10 @@ class MovieInfo(BaseModel):
     imdbId: str
     imdb_id: str
     title: str
-    cover: str | None = None
+    cover_url: str | None = None
     url: str | None = None
     year: str | None = None
+    kind: str | None = None
 
 
     @classmethod
@@ -86,8 +90,9 @@ class MovieInfo(BaseModel):
             imdbId=data['id'],
             imdb_id=str(data['id'].replace('tt', '')),
             title=data['titleNameText'],
-            cover=data.get('titlePosterImageModel', {}).get('url', None),
+            cover_url=data.get('titlePosterImageModel', {}).get('url', None),
             url = f"https://www.imdb.com/title/{data['id']}/",
             year=data.get('titleReleaseText',None),
+            kind=data.get('imageType',None),
 
         )

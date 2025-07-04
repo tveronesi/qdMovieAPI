@@ -6,7 +6,8 @@ from lxml import html
 from .parsers import parse_json_movie, parse_json_search
 
 
-def fetch_movie_details(imdb_id: str):
+def get_movie(imdb_id: str):
+    """Fetch movie details from IMDb using the provided IMDb ID without 'tt' ."""
     url = f"https://www.imdb.com/title/tt{imdb_id}/reference"
     resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
     if resp.status_code != 200:
