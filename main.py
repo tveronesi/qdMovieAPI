@@ -176,7 +176,6 @@ def parse_imdb(imdb_id):
     resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
     if resp.status_code != 200:
         return jsonify({"error": "Unable to fetch the page"}), 500
-    data = {'imdb_id': int(imdb_id)}
 
     tree = html.fromstring(resp.content)
 
@@ -186,8 +185,7 @@ def parse_imdb(imdb_id):
     raw_txt = script[0]
     raw_json = json.loads(raw_txt)
 
-    # data['raw_json'] = raw_json
-    data['parsed_json'] = parse_json(raw_json).model_dump()
+    data=parse_json(raw_json).model_dump()
 
     return data
 
