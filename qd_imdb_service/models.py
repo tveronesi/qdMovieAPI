@@ -64,6 +64,8 @@ class MovieInfo(BaseModel):
     imdbId: str
     imdb_id: str
     title: str
+    cover: str | None = None
+    url: str | None = None
     year: int | None = None
 
 
@@ -73,6 +75,8 @@ class MovieInfo(BaseModel):
             imdbId=data['id'],
             imdb_id=str(data['id'].replace('tt', '')),
             title=data['titleNameText'],
+            cover=data.get('titlePosterImageModel', {}).get('url', None),
+            url = f"https://www.imdb.com/title/{data['id']}/",
             year=data.get('titleReleaseText',None),
 
         )
