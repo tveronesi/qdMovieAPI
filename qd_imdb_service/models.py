@@ -30,7 +30,7 @@ class Person(BaseModel):
             name=data['displayNameText'],
             id=data['id'],
             url=f"https://www.imdb.com/name/{data['id']}",
-            job=data['knownForJobCategory']
+            job=str(data['knownForJobCategory'])
         )
 
 
