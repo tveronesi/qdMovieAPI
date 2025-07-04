@@ -189,11 +189,36 @@ def parse_imdb(imdb_id):
 
     return data
 
+def search_title(title: str) -> Any:
+    url = f"https://www.imdb.com/find?q={title}&s=tt&ttype=ft&ref_=fn_ft"
+    resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+    if resp.status_code != 200:
+        return {"error": "Unable to fetch the page"}
+    tree = html.fromstring(resp.content)
+    script = tree.xpath('//script[@id="__NEXT_DATA__"]/text()')
+    if not script:
+        return {"error": "No script data found"}
+    raw_txt = script[0]
+    raw_json = json.loads(raw_txt)
+    results = raw_json['props']['pageProps']['titleResults']['results']
+    return results
+
+
 
 @app.route("/imdb")
 def get_imdb_data():
     imdb_id = request.args.get("imdb_id")
     return jsonify(parse_imdb(imdb_id))
+
+@app.route("/search")
+def search_imdb():
+    query = request.args.get("query")
+    if not query:
+        return jsonify({"error": "Query parameter is required"}), 400
+
+    results = search_title(query)
+
+    return jsonify(results)
 
 
 if __name__ == "__main__":
