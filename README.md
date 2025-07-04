@@ -46,7 +46,7 @@ If you prefer to run the application without Docker, you can do so by following 
 3. Run the application:
 
    ```sh
-    python main.py
+    python api.py
     ```
 4. The API will be available at `http://127.0.0.1:5000`.
 
