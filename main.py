@@ -4,8 +4,7 @@ from typing import Any
 import requests
 from flask import Flask, jsonify, request
 from lxml import html
-from pydantic import BaseModel, TypeAdapter, model_serializer
-from pydantic.dataclasses import dataclass
+from pydantic import BaseModel
 
 app = Flask(__name__)
 
@@ -35,7 +34,6 @@ class Person(BaseModel):
                    })
 
 
-
 class Movie(BaseModel):
     imdbId: str
     imdb_id: int
@@ -56,7 +54,7 @@ class Movie(BaseModel):
     votes: int | None = None
     trailers: list[str] = []
     genres: list[str] = []
-    interests : list[str] = []
+    interests: list[str] = []
     worldwide_gross: str | None = None
     production_budget: str | None = None
     storyline_keywords: list[str] = []
@@ -66,15 +64,14 @@ class Movie(BaseModel):
     printed_formats: list[str] = []
     negative_formats: list[str] = []
     laboratories: list[str] = []
-    cameras : list[str] = []
+    cameras: list[str] = []
     aspect_ratios: list[tuple[str, str]] = []
-    summaries : list[str] = []
-    synopses : list[str] = []
+    summaries: list[str] = []
+    synopses: list[str] = []
     production: list[str] = []
 
 
-
-def parse_json(raw_json) -> Movie:
+def parse_json_movie(raw_json) -> Movie:
     data = {}
     mainColumnData = raw_json['props']['pageProps']['mainColumnData']
     aboveTheFoldData = raw_json['props']['pageProps']['aboveTheFoldData']
@@ -85,7 +82,8 @@ def parse_json(raw_json) -> Movie:
     data['imdb_id'] = int(data['imdbId'].replace('tt', ''))
     data['url'] = f"https://www.imdb.com/title/{data['imdbId']}/"
     data['title'] = aboveTheFoldData['originalTitleText']['text']
-    data['metacritic_rating'] = mainColumnData['metacritic']['metascore']['score'] if mainColumnData['metacritic'] else None
+    data['metacritic_rating'] = mainColumnData['metacritic']['metascore']['score'] if mainColumnData[
+        'metacritic'] else None
     data['cover'] = aboveTheFoldData['primaryImage']['url']
     data['plot'] = mainColumnData['plot']['plotText']['plainText'] if mainColumnData['plot'] else None
     release_date = mainColumnData['releaseDate']
@@ -94,21 +92,27 @@ def parse_json(raw_json) -> Movie:
     data['rating'] = mainColumnData['ratingsSummary']['aggregateRating']
     data['votes'] = mainColumnData['ratingsSummary']['voteCount']
     data['genres'] = [genre['genre']['text'] for genre in mainColumnData['titleGenres']['genres']]
-    data['worldwide_gross'] = f"{mainColumnData['worldwideGross']['total']['amount']} {mainColumnData['worldwideGross']['total']['currency']}" if mainColumnData['worldwideGross'] else None
-    data['production_budget'] = f"{mainColumnData['productionBudget']['budget']['amount']} {mainColumnData['productionBudget']['budget']['currency']}" if mainColumnData['productionBudget'] else None
+    data[
+        'worldwide_gross'] = f"{mainColumnData['worldwideGross']['total']['amount']} {mainColumnData['worldwideGross']['total']['currency']}" if \
+    mainColumnData['worldwideGross'] else None
+    data[
+        'production_budget'] = f"{mainColumnData['productionBudget']['budget']['amount']} {mainColumnData['productionBudget']['budget']['currency']}" if \
+    mainColumnData['productionBudget'] else None
 
     trailers = mainColumnData['primaryVideos']['edges']
     data['trailers'] = [
-    f"https://www.imdb.com/video/{trailer['node']['id']}" for trailer in trailers if trailer['node']['id']
+        f"https://www.imdb.com/video/{trailer['node']['id']}" for trailer in trailers if trailer['node']['id']
     ]
 
     interests = mainColumnData['interests']['edges']
-    data['interests'] = [interest['node']['primaryText']['text'] for interest in interests ]
+    data['interests'] = [interest['node']['primaryText']['text'] for interest in interests]
 
-    data['release_date'] = f"{release_date['year']}-{release_date['month']:02d}-{release_date['day']:02d}" if release_date else None
+    data[
+        'release_date'] = f"{release_date['year']}-{release_date['month']:02d}-{release_date['day']:02d}" if release_date else None
 
     certificates = mainColumnData['certificates']['edges']
-    data['certificates'] = [{cert['node']['country']['id']: [cert['node']['country']['text'], cert['node']['rating']]} for cert in certificates if cert['node']['country']]
+    data['certificates'] = [{cert['node']['country']['id']: [cert['node']['country']['text'], cert['node']['rating']]}
+                            for cert in certificates if cert['node']['country']]
 
     directors_dump = mainColumnData['directorsPageTitle'][0]['credits']
     data['directors'] = []
@@ -159,56 +163,58 @@ def parse_json(raw_json) -> Movie:
     data['cameras'] = [camera['camera'] for camera in cameras_dump]
 
     aspect_ratios_dump = mainColumnData['technicalSpecifications']['aspectRatios']['items']
-    data['aspect_ratios'] = [ ( ratio['aspectRatio'], ( ' '.join([atrb['text'] for atrb in ratio['attributes']] ))) for ratio in aspect_ratios_dump]
+    data['aspect_ratios'] = [(ratio['aspectRatio'], (' '.join([atrb['text'] for atrb in ratio['attributes']]))) for
+                             ratio in aspect_ratios_dump]
 
     languages_dump = mainColumnData['spokenLanguages']['spokenLanguages']
     data['languages'] = [lang['id'] for lang in languages_dump]
-
-
 
     movie = Movie.model_validate(data)
 
     return movie
 
 
-def parse_imdb(imdb_id):
+def parse_imdb(imdb_id) -> Movie:
     url = f"https://www.imdb.com/title/tt{imdb_id}/reference"
     resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
     if resp.status_code != 200:
-        return jsonify({"error": "Unable to fetch the page"}), 500
-
+        return None
     tree = html.fromstring(resp.content)
 
     script = tree.xpath('//script[@id="__NEXT_DATA__"]/text()')
     if not script:
-        return jsonify({"error": "No script data found"}), 500
+        return None
     raw_txt = script[0]
     raw_json = json.loads(raw_txt)
 
-    data=parse_json(raw_json).model_dump()
+    data = parse_json_movie(raw_json)
 
     return data
+
 
 def search_title(title: str) -> Any:
     url = f"https://www.imdb.com/find?q={title}&s=tt&ttype=ft&ref_=fn_ft"
     resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
     if resp.status_code != 200:
-        return {"error": "Unable to fetch the page"}
+        return None
     tree = html.fromstring(resp.content)
     script = tree.xpath('//script[@id="__NEXT_DATA__"]/text()')
     if not script:
-        return {"error": "No script data found"}
+        return None
     raw_txt = script[0]
     raw_json = json.loads(raw_txt)
     results = raw_json['props']['pageProps']['titleResults']['results']
     return results
 
 
-
 @app.route("/imdb")
 def get_imdb_data():
     imdb_id = request.args.get("imdb_id")
-    return jsonify(parse_imdb(imdb_id))
+    movie = parse_imdb(imdb_id)
+    if not movie:
+        return jsonify({"error": "Movie not found"}), 404
+    return jsonify(movie.model_dump(mode="json"))
+
 
 @app.route("/search")
 def search_imdb():
@@ -217,6 +223,8 @@ def search_imdb():
         return jsonify({"error": "Query parameter is required"}), 400
 
     results = search_title(query)
+    if not results:
+        return jsonify({"error": "No results found"}), 404
 
     return jsonify(results)
 
