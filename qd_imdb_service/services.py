@@ -23,7 +23,7 @@ def fetch_movie_details(imdb_id: str):
 
 
 def search_title(title: str):
-    url = f"https://www.imdb.com/find?q={title}&s=tt&ttype=ft&ref_=fn_ft"
+    url = f"https://www.imdb.com/find?q={title}&ref_=nv_sr_sm"
     resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
     if resp.status_code != 200:
         return None

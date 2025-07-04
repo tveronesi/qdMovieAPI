@@ -105,4 +105,10 @@ def parse_json_movie(raw_json) -> MovieDetail:
 
 
 def parse_json_search(raw_json):
-    return [ MovieInfo.from_movie_info(m_info).model_dump() for m_info in raw_json['props']['pageProps']['titleResults']['results'] ]
+    res = {'titles': [MovieInfo.from_movie_info(m_info).model_dump() for m_info in
+                      raw_json['props']['pageProps']['titleResults']['results']],
+           'people': [
+                Person.from_search(person).model_dump() for person in raw_json['props']['pageProps']['nameResults']['results']
+           ]
+           }
+    return res
