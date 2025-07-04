@@ -16,7 +16,7 @@ class Person(BaseModel):
     url: str
 
     @classmethod
-    def from_dict(cls, data: dict):
+    def from_directors(cls, data: dict):
         return cls(**
                    {
                        'name': data['name']['nameText']['text'],
@@ -29,10 +29,15 @@ class Person(BaseModel):
 class Movie(BaseModel):
     imdbId: str
     title: str
-    small_cover: str
+    cover: str
     release_date: str | None = None
     certificates: list[dict[str, list[str]]] = []
     directors: list[Person] = []
+    year: int | None = None
+    duration: int | None = None
+    country_codes: list[str] = []
+    rating: float | None = None
+
 
 
 def parse_json(raw_json) -> Movie:
@@ -44,22 +49,25 @@ def parse_json(raw_json) -> Movie:
 
     data['imdbId'] = mainColumnData['id']
     data['title'] = aboveTheFoldData['originalTitleText']['text']
-    data['small_cover'] = aboveTheFoldData['primaryImage']['url']
+    data['cover'] = aboveTheFoldData['primaryImage']['url']
     release_date = mainColumnData['releaseDate']
+    data['year'] = aboveTheFoldData['releaseYear']['year']
+    data['duration'] = aboveTheFoldData['runtime']['seconds'] / 60 if aboveTheFoldData['runtime'] else None
+    data['trailer']
 
     data[
         'release_date'] = f"{release_date['year']}-{release_date['month']:02d}-{release_date['day']:02d}" if release_date else None
     movie = Movie.model_validate(data)
     certificates = mainColumnData['certificates']['edges']
-    data['certificates'] = [{cert['node']['country']['id']: [cert['node']['country']['text'], cert['node']['rating']]}
-                            for cert in certificates if cert['node']['country']]
+   # data['certificates'] = [{cert['node']['country']['id']: [cert['node']['country']['text'], cert['node']['rating']]}
+    #                        for cert in certificates if cert['node']['country']]
 
-    movie.certificates = data['certificates']
+   # movie.certificates = data['certificates']
 
     directors_dump = mainColumnData['directorsPageTitle'][0]['credits']
     data['directors'] = []
     for director in directors_dump:
-        d = Person.from_dict(director)
+        d = Person.from_directors(director)
         data['directors'].append(d)
     movie.directors = data['directors']
 
