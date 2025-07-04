@@ -14,10 +14,10 @@ It uses the [imdbinfo](https://github.com/tveronesi/imdbinfo) package to fetch m
    
 3. The API will be available at `http://127.0.0.1:5000`.
 4. The api only has 2 endpoints:
-   - `/search?q=<searchstring>`: Search for movies by title. Returns a list of movies matching the title.
-     - example: `http://127.0.0.1:5000/search?q=matrix`
-   - `/imdb/<imdb_id>`: Fetch movie details by IMDB ID (without 'tt').
-     - example: `http://127.0.0.1:5000/imdb/0234215'
+   - `/search?q=<searchstring>` 
+     - example: http://127.0.0.1:5000/search?q=matrix
+   - `/imdb/<imdb_id>`: 
+     - example: http://127.0.0.1:5000/imdb/0234215
 
 
 ## Running Locally without Docker
