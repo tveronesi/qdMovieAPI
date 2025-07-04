@@ -1,0 +1,11 @@
+services:
+  qd_imdb_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: qd_imdb_api
+# uncomment the next line if you want to use a local directory code instead of building the image every time.
+#    volumes:
+#      - .:/app
+    ports:
+      - "5000:5000"
