@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 
 [project]
-name = "imdb_service"
+name = "qd_imdb_service"
 version = "0.1.0"
 description = "A short description"
 readme = "README.md"
@@ -20,4 +20,4 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["imdb_service"]
+packages = ["qd_imdb_service"]

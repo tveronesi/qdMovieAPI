@@ -1,6 +1,6 @@
 # python
 from flask import Flask, jsonify, request
-from imdb_service.services import fetch_movie_details, search_title
+from qd_imdb_service.services import fetch_movie_details, search_title
 
 app = Flask(__name__)
 
