@@ -11,7 +11,3 @@ RUN pip install -r requirements.txt
 EXPOSE 5000
 ENTRYPOINT ["python", "api.py"]
 
-# run on the root directory :
-#    docker build -t qd_imdb_api .
-
-# docker run -it --rm -p 5000:5000 -v $PWD:/app -w /app  qd_imdb_api python api.py
