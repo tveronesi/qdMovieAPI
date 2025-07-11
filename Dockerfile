@@ -11,3 +11,5 @@ RUN pip install -r requirements.txt
 EXPOSE 5000
 ENTRYPOINT ["python", "api.py"]
 
+# build command
+# docker build -t qd_imdb_api .
