@@ -9,7 +9,7 @@ It uses the [imdbinfo](https://github.com/tveronesi/imdbinfo) package to fetch m
 2. Build and run the service with:
 
    ```sh
-   docker-compose up --build
+   docker compose up --build
     ```
    
 3. The API will be available at `http://127.0.0.1:5000`.
