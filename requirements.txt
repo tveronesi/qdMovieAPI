@@ -1,2 +1,2 @@
-imdbinfo==0.2.5
+imdbinfo==0.3.0
 Flask==3.0.3
