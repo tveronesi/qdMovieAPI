@@ -21,7 +21,7 @@ It uses the [imdbinfo](https://github.com/tveronesi/imdbinfo) package to fetch m
    - `/name/<imdb_id>`
      - example: http://127.0.0.1:5000/name/nm0000206
    - `/apidoc`
-     - returns a Swagger/OpenAPI description of the service
+     - auto-generated Swagger/OpenAPI documentation for the service
 
 
 ## Running Locally without Docker
@@ -44,6 +44,7 @@ If you prefer to run the application without Docker, you can do so by following 
 - Python 3.8 or higher
 - `imdbinfo` package for fetching movie details
 - Flask for creating the API service
+- Flask-RESTX for REST utilities and automatic API documentation
 
 ## Package imdbinfo
 
