@@ -13,11 +13,15 @@ It uses the [imdbinfo](https://github.com/tveronesi/imdbinfo) package to fetch m
     ```
    
 3. The API will be available at `http://127.0.0.1:5000`.
-4. The api only has 2 endpoints:
-   - `/search?q=<searchstring>` 
+4. The API exposes the following endpoints:
+   - `/search?q=<searchstring>`
      - example: http://127.0.0.1:5000/search?q=matrix
-   - `/movie/<imdb_id>`: 
+   - `/movie/<imdb_id>`
      - example: http://127.0.0.1:5000/movie/0234215
+   - `/name/<imdb_id>`
+     - example: http://127.0.0.1:5000/name/nm0000206
+   - `/apidoc`
+     - returns a Swagger/OpenAPI description of the service
 
 
 ## Running Locally without Docker
