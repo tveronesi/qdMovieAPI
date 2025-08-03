@@ -1,7 +1,7 @@
 # qd_imdb_api
 
 This project provides a "quick and dirty" API service to retrieve movie information from IMDB.
-It uses the [imdbinfo](https://github.com/tveronesi/imdbinfo) package to fetch movie details based on the IMDB ID or title.
+It uses the [imdbinfo](https://github.com/tveronesi/imdbinfo) package to fetch movie details based on the IMDB ID or title and is powered by [FastAPI](https://fastapi.tiangolo.com/).
 
 ## Usage
 
@@ -36,15 +36,17 @@ If you prefer to run the application without Docker, you can do so by following 
 3. Run the application:
 
    ```sh
-    python api.py
-    ```
+   python api.py
+   # or
+   uvicorn api:app --reload
+   ```
 4. The API will be available at `http://127.0.0.1:5000`.
 
 ## Requirements
 - Python 3.8 or higher
 - `imdbinfo` package for fetching movie details
-- Flask for creating the API service
-- Flask-RESTX for REST utilities and automatic API documentation
+- FastAPI for creating the API service and automatic API documentation
+- Uvicorn for running the ASGI server
 
 ## Package imdbinfo
 
