@@ -9,7 +9,7 @@ RUN pip install --upgrade pip \
 COPY api.py .
 
 EXPOSE 5000
-ENTRYPOINT ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "5000"]
+ENTRYPOINT ["python", "api.py"]
 
 # build command
 # docker build -t qd_imdb_api .
