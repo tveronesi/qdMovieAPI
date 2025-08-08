@@ -6,8 +6,7 @@ automatically by FastAPI at ``/apidoc``.
 """
 
 from fastapi import FastAPI, HTTPException, Query
-from imdbinfo.services import get_movie, get_name, search_title
-
+from imdbinfo.services import get_movie, get_name, search_title, get_episodes
 
 app = FastAPI(title="qd_imdb_api", version="1.0.0", docs_url="/apidoc")
 
@@ -37,6 +36,15 @@ def search(q: str = Query(..., description="The search term for the movie title"
     if not results:
         raise HTTPException(status_code=404, detail="No results found")
     return results.model_dump()
+
+@app.get("/series/{imdb_id}/season/{season}", summary="Retrieve episodes for a season of a series")
+def read_season_episodes(imdb_id: str, season: int):
+    """Return the details for the movie identified by ``imdb_id``."""
+    episodes = get_episodes(imdb_id, season)
+    if not episodes:
+        raise HTTPException(status_code=404, detail="Episodes not found")
+    return episodes.model_dump()
+
 
 
 if __name__ == "__main__":  # pragma: no cover - convenience for local runs
