@@ -45,7 +45,11 @@ def read_season_episodes(imdb_id: str, season: int):
         raise HTTPException(status_code=404, detail="Episodes not found")
     return episodes.model_dump()
 
-
+# root endpoint for health check
+@app.get("/", summary="Health check")
+def root():
+    """Root endpoint for health check."""
+    return {"message": "qd_imdb_api is running", "version": app.version}
 
 if __name__ == "__main__":  # pragma: no cover - convenience for local runs
     import uvicorn
