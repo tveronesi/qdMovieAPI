@@ -6,7 +6,7 @@ automatically by FastAPI at ``/apidoc``.
 """
 
 from fastapi import FastAPI, HTTPException, Query
-from imdbinfo.services import get_movie, get_name, search_title, get_all_episodes, get_episodes
+from imdbinfo.services import get_movie, get_name, search_title, get_all_episodes, get_episodes, get_akas
 
 app = FastAPI(title="qd_imdb_api", version="1.0.0", docs_url="/apidoc")
 
@@ -52,6 +52,15 @@ def read_series_episodes(imdb_id: str):
     if not episodes:
         raise HTTPException(status_code=404, detail="Episodes not found")
     return episodes
+
+# implement akas request using get_akas
+@app.get("/akas/{imdb_id}", summary="Retrieve AKAs for a movie or series")
+def read_akas(imdb_id: str):
+    """Return the AKAs for the movie or series identified by ``imdb_id``."""
+    akas = get_akas(imdb_id)
+    if not akas:
+        raise HTTPException(status_code=404, detail="AKAs not found")
+    return akas
 
 # root endpoint for health check
 @app.get("/", summary="Health check")
