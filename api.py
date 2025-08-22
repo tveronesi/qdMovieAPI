@@ -6,7 +6,7 @@ automatically by FastAPI at ``/apidoc``.
 """
 
 from fastapi import FastAPI, HTTPException, Query
-from imdbinfo.services import get_movie, get_name, search_title, get_all_episodes, get_episodes, get_akas
+from imdbinfo.services import get_movie, get_name, search_title, get_all_episodes, get_episodes
 
 app = FastAPI(title="qd_imdb_api", version="1.0.0", docs_url="/apidoc")
 
