@@ -8,7 +8,21 @@ automatically by FastAPI at ``/apidoc``.
 from fastapi import FastAPI, HTTPException, Query
 from imdbinfo.services import get_movie, get_name, search_title, get_all_episodes, get_episodes, get_akas
 
-app = FastAPI(title="qd_imdb_api", version="1.0.0", docs_url="/apidoc")
+description = """
+This project provides a "quick and dirty" API service to retrieve movie information from IMDB.
+
+It uses the [imdbinfo](https://github.com/tveronesi/imdbinfo) package to fetch movie details based on the IMDB ID or title and is powered by [FastAPI](https://fastapi.tiangolo.com/).
+
+[![PyPI Version](https://img.shields.io/pypi/v/imdbinfo?style=flat-square)](https://pypi.org/project/imdbinfo/)
+
+"""
+app = FastAPI(
+    title="qd movie api",
+    description=description,
+    version="1.0.0",
+    docs_url="/apidoc"
+
+)
 
 
 @app.get("/movie/{imdb_id}", summary="Retrieve movie details by IMDB ID")
@@ -37,6 +51,7 @@ def search(q: str = Query(..., description="The search term for the movie title"
         raise HTTPException(status_code=404, detail="No results found")
     return results.model_dump()
 
+
 @app.get("/series/{imdb_id}/season/{season}", summary="Retrieve episodes for a season of a series")
 def read_season_episodes(imdb_id: str, season: int):
     """Return the details for the movie identified by ``imdb_id``."""
@@ -45,6 +60,7 @@ def read_season_episodes(imdb_id: str, season: int):
         raise HTTPException(status_code=404, detail="Episodes not found")
     return episodes.model_dump()
 
+
 @app.get("/series/{imdb_id}/episodes", summary="Retrieve episodes for a series")
 def read_series_episodes(imdb_id: str):
     """Return the details for all episodes of a series identified by ``imdb_id``."""
@@ -52,6 +68,7 @@ def read_series_episodes(imdb_id: str):
     if not episodes:
         raise HTTPException(status_code=404, detail="Episodes not found")
     return episodes
+
 
 # implement akas request using get_akas
 @app.get("/akas/{imdb_id}", summary="Retrieve AKAs for a movie or series")
@@ -62,14 +79,15 @@ def read_akas(imdb_id: str):
         raise HTTPException(status_code=404, detail="AKAs not found")
     return akas
 
+
 # root endpoint for health check
 @app.get("/", summary="Health check")
 def root():
     """Root endpoint for health check."""
     return {"message": "qd_imdb_api is running", "version": app.version}
 
+
 if __name__ == "__main__":  # pragma: no cover - convenience for local runs
     import uvicorn
 
     uvicorn.run("api:app", host="0.0.0.0", port=5000, reload=True)
-
