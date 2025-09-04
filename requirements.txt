@@ -1,4 +1,3 @@
-#branch akas
 git+https://github.com/tveronesi/imdbinfo.git@develop#egg=imdbinfo
 fastapi==0.111.*
 uvicorn[standard]==0.29.*
