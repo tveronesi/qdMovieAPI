@@ -26,6 +26,11 @@ It uses the [imdbinfo](https://github.com/tveronesi/imdbinfo) package to fetch m
      - example: http://127.0.0.1:5000/series/tt0944947/episodes
     - `/akas/<imdb_id>
      - example: http://127.0.1:5000/akas/tt0944947`
+   - `/trivia/<imdb_id>`
+     - example: http://127.0.1:5000/trivia/tt0944947`
+   - `/reviews/<imdb_id>`
+     - example: http://127.0.1:5000/reviews/tt0944947`
+     
    - `/apidoc`
      - auto-generated Swagger/OpenAPI documentation for the service
    - `/`
