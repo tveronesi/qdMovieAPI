@@ -45,8 +45,6 @@ If you prefer to run the application without Docker, you can do so by following 
 
    ```sh
    python api.py
-   # or
-   uvicorn api:app --reload
    ```
 4. The API will be available at `http://127.0.0.1:5000`.
 

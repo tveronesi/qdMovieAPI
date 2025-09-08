@@ -17,7 +17,21 @@ from imdbinfo import (
     get_trivia,
 )
 
-app = FastAPI(title="qd_imdb_api", version="1.0.0", docs_url="/apidoc")
+description = """
+This project provides a "quick and dirty" API service to retrieve movie information from IMDB.
+
+It uses the [imdbinfo](https://github.com/tveronesi/imdbinfo) package to fetch movie details based on the IMDB ID or title and is powered by [FastAPI](https://fastapi.tiangolo.com/).
+
+[![PyPI Version](https://img.shields.io/pypi/v/imdbinfo?style=flat-square)](https://pypi.org/project/imdbinfo/)
+
+"""
+app = FastAPI(
+    title="qd movie api",
+    description=description,
+    version="1.0.0",
+    docs_url="/apidoc"
+
+)
 
 
 @app.get("/movie/{imdb_id}", summary="Retrieve movie details by IMDB ID")
@@ -106,3 +120,4 @@ if __name__ == "__main__":  # pragma: no cover - convenience for local runs
     import uvicorn
 
     uvicorn.run("api:app", host="0.0.0.0", port=5000, reload=True)
+
