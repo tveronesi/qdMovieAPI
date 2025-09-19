@@ -15,6 +15,7 @@ from imdbinfo import (
     get_akas,
     get_reviews,
     get_trivia,
+    get_filmography,  # aggiunto import
 )
 
 description = """
@@ -109,6 +110,15 @@ def read_trivia(imdb_id: str):
     return trivia
 
 
+@app.get("/filmography/{imdb_id}", summary="Recupera la filmografia completa per una persona")
+def read_filmography(imdb_id: str):
+    """Restituisce la filmografia completa della persona identificata da ``imdb_id`` raggruppata per ruolo/lavoro."""
+    filmography = get_filmography(imdb_id)
+    if not filmography:
+        raise HTTPException(status_code=404, detail="Filmografia non trovata")
+    return filmography
+
+
 # root endpoint for health check
 @app.get("/", summary="Health check")
 def root():
@@ -120,4 +130,3 @@ if __name__ == "__main__":  # pragma: no cover - convenience for local runs
     import uvicorn
 
     uvicorn.run("api:app", host="0.0.0.0", port=5000, reload=True)
-
