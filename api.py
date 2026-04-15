@@ -12,7 +12,7 @@ from imdbinfo import (
     get_name,
     search_title,
     get_all_episodes,
-    get_episodes,
+    get_season_episodes,
     get_akas,
     get_reviews,
     get_trivia,
@@ -73,7 +73,7 @@ def search(q: str = Query(..., description="The search term for the movie title"
 )
 def read_season_episodes(imdb_id: str, season: int):
     """Return the details for the movie identified by ``imdb_id``."""
-    episodes = get_episodes(imdb_id, season)
+    episodes = get_season_episodes(imdb_id, season)
     if not episodes:
         raise HTTPException(status_code=404, detail="Episodes not found")
     return episodes.model_dump()
