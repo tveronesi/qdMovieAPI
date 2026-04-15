@@ -4,7 +4,7 @@ This module exposes a small set of HTTP endpoints to search for movies and
 names on IMDB using the ``imdbinfo`` package.  The API documentation is served
 automatically by FastAPI at ``/apidoc``.
 """
-from typing import List, Union, Dict
+from typing import Dict, List, Optional, Union
 
 from fastapi import FastAPI, HTTPException, Query
 from imdbinfo import (
@@ -38,29 +38,37 @@ app = FastAPI(
 
 )
 
+LOCALE_QUERY = Query(
+    default=None,
+    description="Optional locale forwarded to imdbinfo (for example: en-US or it-IT)."
+)
+
 
 @app.get("/movie/{imdb_id}", summary="Retrieve movie details by IMDB ID", response_model=MovieDetail)
-def read_movie(imdb_id: str):
+def read_movie(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the details for the movie identified by ``imdb_id``."""
-    movie_data = get_movie(imdb_id)
+    movie_data = get_movie(imdb_id, locale=locale)
     if not movie_data:
         raise HTTPException(status_code=404, detail="Movie not found")
     return movie_data.model_dump()
 
 
 @app.get("/name/{imdb_id}", summary="Retrieve name details by IMDB ID", response_model=PersonDetail)
-def read_name(imdb_id: str):
+def read_name(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the details for the name entry identified by ``imdb_id``."""
-    name_data = get_name(imdb_id)
+    name_data = get_name(imdb_id, locale=locale)
     if not name_data:
         raise HTTPException(status_code=404, detail="Name not found")
     return name_data.model_dump()
 
 
 @app.get("/search", summary="Search for movie titles", response_model=SearchResult)
-def search(q: str = Query(..., description="The search term for the movie title")):
+def search(
+    q: str = Query(..., description="The search term for the movie title"),
+    locale: Optional[str] = LOCALE_QUERY,
+):
     """Search for movie titles that match ``q``."""
-    results = search_title(q)
+    results = search_title(q, locale=locale)
     if not results:
         raise HTTPException(status_code=404, detail="No results found")
     return results.model_dump()
@@ -71,62 +79,62 @@ def search(q: str = Query(..., description="The search term for the movie title"
     summary="Retrieve episodes for a season of a series",
     response_model=SeasonEpisodesList
 )
-def read_season_episodes(imdb_id: str, season: int):
+def read_season_episodes(imdb_id: str, season: int, locale: Optional[str] = LOCALE_QUERY):
     """Return the details for the movie identified by ``imdb_id``."""
-    episodes = get_season_episodes(imdb_id, season)
+    episodes = get_season_episodes(imdb_id, season, locale=locale)
     if not episodes:
         raise HTTPException(status_code=404, detail="Episodes not found")
     return episodes.model_dump()
 
 
 @app.get("/series/{imdb_id}/episodes", summary="Retrieve episodes for a series", response_model=List[BulkedEpisode])
-def read_series_episodes(imdb_id: str):
+def read_series_episodes(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the details for all episodes of a series identified by ``imdb_id``."""
-    episodes = get_all_episodes(imdb_id)
+    episodes = get_all_episodes(imdb_id, locale=locale)
     if not episodes:
         raise HTTPException(status_code=404, detail="Episodes not found")
     return episodes
 
 
 @app.get("/akas/{imdb_id}", summary="Retrieve AKAs for a movie or series", response_model=Union[AkasData, list])
-def read_akas(imdb_id: str):
+def read_akas(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the AKAs for the movie or series identified by ``imdb_id``."""
-    akas = get_akas(imdb_id)
+    akas = get_akas(imdb_id, locale=locale)
     if not akas:
         raise HTTPException(status_code=404, detail="AKAs not found")
     return akas
 
 
 @app.get("/reviews/{imdb_id}", summary="Retrieve reviews for a movie or series", response_model=List[Dict])
-def read_reviews(imdb_id: str):
+def read_reviews(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the reviews for the movie or series identified by ``imdb_id``."""
-    reviews = get_reviews(imdb_id)
+    reviews = get_reviews(imdb_id, locale=locale)
     if not reviews:
         raise HTTPException(status_code=404, detail="Reviews not found")
     return reviews
 
 
 @app.get("/trivia/{imdb_id}", summary="Retrieve trivia for a movie or series", response_model=List[Dict])
-def read_trivia(imdb_id: str):
+def read_trivia(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the trivia for the movie or series identified by ``imdb_id``."""
-    trivia = get_trivia(imdb_id)
+    trivia = get_trivia(imdb_id, locale=locale)
     if not trivia:
         raise HTTPException(status_code=404, detail="Trivia not found")
     return trivia
 
 
 @app.get("/filmography/{imdb_id}", summary="Recupera la filmografia completa per una persona", response_model=dict)
-def read_filmography(imdb_id: str):
+def read_filmography(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Restituisce la filmografia completa della persona identificata da ``imdb_id`` raggruppata per ruolo/lavoro."""
-    filmography = get_filmography(imdb_id)
+    filmography = get_filmography(imdb_id, locale=locale)
     if not filmography:
         raise HTTPException(status_code=404, detail="Filmografia non trovata")
     return filmography
 
 @app.get("/parental-guide/{imdb_id}", summary="Retrieve parental guide for a movie or series", response_model=ParentalGuideList)
-def read_parental_guide(imdb_id: str):
+def read_parental_guide(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the parental guide for the movie or series identified by ``imdb_id``."""
-    parental_guide = get_parental_guide(imdb_id)
+    parental_guide = get_parental_guide(imdb_id, locale=locale)
     if not parental_guide:
         raise HTTPException(status_code=404, detail="Parental guide not found")
     return parental_guide

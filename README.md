@@ -10,31 +10,34 @@ It uses the [imdbinfo](https://github.com/tveronesi/imdbinfo) package to fetch m
 
    ```sh
    docker compose up --build
-    ```
+   ```
    
 3. The API will be available at `http://127.0.0.1:5000`.
-4. The API exposes the following endpoints:
-   - `/search?q=<searchstring>`
-     - example: http://127.0.0.1:5000/search?q=matrix
-   - `/movie/<imdb_id>`
-     - example: http://127.0.0.1:5000/movie/0234215
-   - `/name/<imdb_id>`
-     - example: http://127.0.0.1:5000/name/nm0000206
-   - `/series/<imdb_id>/season/<season>`
-     - example: http://127.0.0.1:5000/series/tt0944947/season/1
-   - `/series/<imdb_id>/episodes`
-     - example: http://127.0.0.1:5000/series/tt0944947/episodes
-    - `/akas/<imdb_id>`
-     - example: http://127.0.1:5000/akas/tt0944947`
-   - `/trivia/<imdb_id>`
-     - example: http://127.0.1:5000/trivia/tt0944947`
-   - `/reviews/<imdb_id>`
-     - example: http://127.0.1:5000/reviews/tt0944947`
-   - `/filmography/<imdb_id>`
-     - example: http://127.0.0.1:5000/filmography/nm0000206
+4. All `imdbinfo`-backed endpoints accept an optional `locale` query parameter and forward it upstream.
+   - example locale values: `en-US`, `it-IT`
+   - example usage: `http://127.0.0.1:5000/movie/0234215?locale=it-IT`
+5. The API exposes the following endpoints:
+   - `/search?q=<searchstring>[&locale=<locale>]`
+     - example: `http://127.0.0.1:5000/search?q=matrix&locale=en-US`
+   - `/movie/<imdb_id>[?locale=<locale>]`
+     - example: `http://127.0.0.1:5000/movie/0234215?locale=it-IT`
+   - `/name/<imdb_id>[?locale=<locale>]`
+     - example: `http://127.0.0.1:5000/name/nm0000206?locale=en-US`
+   - `/series/<imdb_id>/season/<season>[?locale=<locale>]`
+     - example: `http://127.0.0.1:5000/series/tt0944947/season/1?locale=en-US`
+   - `/series/<imdb_id>/episodes[?locale=<locale>]`
+     - example: `http://127.0.0.1:5000/series/tt0944947/episodes?locale=en-US`
+   - `/akas/<imdb_id>[?locale=<locale>]`
+     - example: `http://127.0.0.1:5000/akas/tt0944947?locale=it-IT`
+   - `/trivia/<imdb_id>[?locale=<locale>]`
+     - example: `http://127.0.0.1:5000/trivia/tt0944947?locale=en-US`
+   - `/reviews/<imdb_id>[?locale=<locale>]`
+     - example: `http://127.0.0.1:5000/reviews/tt0944947?locale=en-US`
+   - `/filmography/<imdb_id>[?locale=<locale>]`
+     - example: `http://127.0.0.1:5000/filmography/nm0000206?locale=it-IT`
      - returns the complete filmography of a person grouped by role
-   - `/parental-guide/<imdb_id>`
-     - example: http://127.0.1:5000/parental-guide/tt0944947`
+   - `/parental-guide/<imdb_id>[?locale=<locale>]`
+     - example: `http://127.0.0.1:5000/parental-guide/tt0944947?locale=en-US`
      - returns the parental guide information for a movie or series
    - `/apidoc`
      - auto-generated Swagger/OpenAPI documentation for the service
@@ -66,7 +69,7 @@ If you prefer to run the application without Docker, you can do so by following 
 
 ## Package imdbinfo
 
-FOr details on how to use the `imdbinfo` package, please refer to the [imdbinfo](https://github.com/tveronesi/imdbinfo) Github repository.
+For details on how to use the `imdbinfo` package, please refer to the [imdbinfo](https://github.com/tveronesi/imdbinfo) GitHub repository.
 
 ## License
 Copyright (C)  2025 T.Veronesi
@@ -75,4 +78,4 @@ This code is released under the GPL license, version 2 or later.
 
 Read the included [`LICENSE.txt`](LICENSE.txt) file for details.
 
-This project and its authors are not affiliated in any way to Internet Movie Database Inc.; see the  [`DISCLAIMER.txt`](DISCLAIMER.txt) file for details about data licenses.
+This project and its authors are not affiliated in any way to Internet Movie Database Inc.; see the [`DISCLAIMER.txt`](DISCLAIMER.txt) file for details about data licenses.
