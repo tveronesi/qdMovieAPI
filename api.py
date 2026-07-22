@@ -18,9 +18,10 @@ from imdbinfo import (
     get_trivia,
     get_filmography,  # aggiunto import
     get_parental_guide,
+get_media_gallery
 )
 from imdbinfo.models import ParentalGuideList, MovieDetail, PersonDetail, SearchResult, SeasonEpisodesList, \
-    BulkedEpisode, AkasData
+    BulkedEpisode, AkasData, MediaGallery
 
 description = """
 This project provides a "quick and dirty" API service to retrieve movie information from IMDB.
@@ -138,6 +139,14 @@ def read_parental_guide(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     if not parental_guide:
         raise HTTPException(status_code=404, detail="Parental guide not found")
     return parental_guide
+
+@app.get("/media-gallery/{imdb_id}", summary="Retrieve media gallery for a movie or series", response_model=MediaGallery)
+def read_media_gallery(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
+    """Return the media gallery for the movie or series identified by ``imdb_id``."""
+    media_gallery = get_media_gallery(imdb_id, locale=locale)
+    if not media_gallery:
+        raise HTTPException(status_code=404, detail="Media gallery not found")
+    return media_gallery
 
 # root endpoint for health check
 @app.get("/", summary="Health check")
