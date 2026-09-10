@@ -42,6 +42,9 @@ It uses the [imdbinfo](https://github.com/tveronesi/imdbinfo) package to fetch m
    - `/media-gallery/<imdb_id>[?locale=<locale>]`
      - example: `http://127.0.0.1:5000/media-gallery/tt0944947?locale=en-US`
      - returns the media gallery (images and videos) for a movie or series
+   - `/quotes/<imdb_id>[?locale=<locale>]`
+     - example: `http://127.0.0.1:5000/quotes/tt0944947?locale=en-US`
+     - returns the quotes for a movie or series
    - `/apidoc`
      - auto-generated Swagger/OpenAPI documentation for the service
    - `/`
