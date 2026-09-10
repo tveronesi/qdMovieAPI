@@ -18,10 +18,10 @@ from imdbinfo import (
     get_trivia,
     get_filmography,  # aggiunto import
     get_parental_guide,
-get_media_gallery
+get_media_gallery, get_quotes
 )
 from imdbinfo.models import ParentalGuideList, MovieDetail, PersonDetail, SearchResult, SeasonEpisodesList, \
-    BulkedEpisode, AkasData, MediaGallery
+    BulkedEpisode, AkasData, MediaGallery, Quote
 
 description = """
 This project provides a "quick and dirty" API service to retrieve movie information from IMDB.
@@ -147,6 +147,14 @@ def read_media_gallery(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     if not media_gallery:
         raise HTTPException(status_code=404, detail="Media gallery not found")
     return media_gallery
+
+@app.get("/quotes/{imdb_id}", summary="Retrieve quotes for a movie or series", response_model=List[Quote])
+def read_quotes(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
+    """Return the quotes for the movie or series identified by ``imdb_id``."""
+    quotes = get_quotes(imdb_id, locale=locale)
+    if not quotes:
+        raise HTTPException(status_code=404, detail="Quotes not found")
+    return quotes
 
 # root endpoint for health check
 @app.get("/", summary="Health check")
