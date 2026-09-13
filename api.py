@@ -18,10 +18,11 @@ from imdbinfo import (
     get_trivia,
     get_filmography,  # aggiunto import
     get_parental_guide,
-get_media_gallery
+get_media_gallery,
+    get_awards,
 )
 from imdbinfo.models import ParentalGuideList, MovieDetail, PersonDetail, SearchResult, SeasonEpisodesList, \
-    BulkedEpisode, AkasData, MediaGallery
+    BulkedEpisode, AkasData, MediaGallery, Award
 
 description = """
 This project provides a "quick and dirty" API service to retrieve movie information from IMDB.
@@ -147,6 +148,14 @@ def read_media_gallery(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     if not media_gallery:
         raise HTTPException(status_code=404, detail="Media gallery not found")
     return media_gallery
+
+@app.get('/awards/{imdb_id}', summary="Retrieve awards for a movie or series", response_model=List[Award])
+def read_awards(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
+    """Return the awards for the movie or series identified by ``imdb_id``."""
+    awards = get_awards(imdb_id, locale=locale)
+    if not awards:
+        raise HTTPException(status_code=404, detail="Awards not found")
+    return awards
 
 # root endpoint for health check
 @app.get("/", summary="Health check")
