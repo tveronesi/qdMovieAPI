@@ -20,6 +20,7 @@ from imdbinfo import (
     get_parental_guide,
 get_media_gallery, get_quotes,get_awards
 )
+from imdbinfo.locale import set_locale
 from imdbinfo.models import ParentalGuideList, MovieDetail, PersonDetail, SearchResult, SeasonEpisodesList, \
     BulkedEpisode, AkasData, MediaGallery,Award,Quote
 
@@ -91,7 +92,8 @@ def read_season_episodes(imdb_id: str, season: int, locale: Optional[str] = LOCA
 @app.get("/series/{imdb_id}/episodes", summary="Retrieve episodes for a series", response_model=List[BulkedEpisode])
 def read_series_episodes(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the details for all episodes of a series identified by ``imdb_id``."""
-    episodes = get_all_episodes(imdb_id, locale=locale)
+    set_locale(locale)
+    episodes = get_all_episodes(imdb_id)
     if not episodes:
         raise HTTPException(status_code=404, detail="Episodes not found")
     return episodes
@@ -100,7 +102,8 @@ def read_series_episodes(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
 @app.get("/akas/{imdb_id}", summary="Retrieve AKAs for a movie or series", response_model=Union[AkasData, list])
 def read_akas(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the AKAs for the movie or series identified by ``imdb_id``."""
-    akas = get_akas(imdb_id, locale=locale)
+    set_locale(locale)
+    akas = get_akas(imdb_id)
     if not akas:
         raise HTTPException(status_code=404, detail="AKAs not found")
     return akas
@@ -109,7 +112,8 @@ def read_akas(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
 @app.get("/reviews/{imdb_id}", summary="Retrieve reviews for a movie or series", response_model=List[Dict])
 def read_reviews(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the reviews for the movie or series identified by ``imdb_id``."""
-    reviews = get_reviews(imdb_id, locale=locale)
+    set_locale(locale)
+    reviews = get_reviews(imdb_id)
     if not reviews:
         raise HTTPException(status_code=404, detail="Reviews not found")
     return reviews
@@ -118,7 +122,8 @@ def read_reviews(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
 @app.get("/trivia/{imdb_id}", summary="Retrieve trivia for a movie or series", response_model=List[Dict])
 def read_trivia(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the trivia for the movie or series identified by ``imdb_id``."""
-    trivia = get_trivia(imdb_id, locale=locale)
+    set_locale(locale)
+    trivia = get_trivia(imdb_id)
     if not trivia:
         raise HTTPException(status_code=404, detail="Trivia not found")
     return trivia
@@ -127,7 +132,8 @@ def read_trivia(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
 @app.get("/filmography/{imdb_id}", summary="Recupera la filmografia completa per una persona", response_model=dict)
 def read_filmography(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Restituisce la filmografia completa della persona identificata da ``imdb_id`` raggruppata per ruolo/lavoro."""
-    filmography = get_filmography(imdb_id, locale=locale)
+    set_locale(locale)
+    filmography = get_filmography(imdb_id)
     if not filmography:
         raise HTTPException(status_code=404, detail="Filmografia non trovata")
     return filmography
@@ -135,7 +141,8 @@ def read_filmography(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
 @app.get("/parental-guide/{imdb_id}", summary="Retrieve parental guide for a movie or series", response_model=ParentalGuideList)
 def read_parental_guide(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the parental guide for the movie or series identified by ``imdb_id``."""
-    parental_guide = get_parental_guide(imdb_id, locale=locale)
+    set_locale(locale)
+    parental_guide = get_parental_guide(imdb_id)
     if not parental_guide:
         raise HTTPException(status_code=404, detail="Parental guide not found")
     return parental_guide
@@ -143,7 +150,8 @@ def read_parental_guide(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
 @app.get("/media-gallery/{imdb_id}", summary="Retrieve media gallery for a movie or series", response_model=MediaGallery)
 def read_media_gallery(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the media gallery for the movie or series identified by ``imdb_id``."""
-    media_gallery = get_media_gallery(imdb_id, locale=locale)
+    set_locale(locale)
+    media_gallery = get_media_gallery(imdb_id)
     if not media_gallery:
         raise HTTPException(status_code=404, detail="Media gallery not found")
     return media_gallery
@@ -151,7 +159,8 @@ def read_media_gallery(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
 @app.get("/quotes/{imdb_id}", summary="Retrieve quotes for a movie or series", response_model=List[Quote])
 def read_quotes(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the quotes for the movie or series identified by ``imdb_id``."""
-    quotes = get_quotes(imdb_id, locale=locale)
+    set_locale(locale)
+    quotes = get_quotes(imdb_id)
     if not quotes:
         raise HTTPException(status_code=404, detail="Quotes not found")
     return quotes
@@ -159,7 +168,8 @@ def read_quotes(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
 @app.get('/awards/{imdb_id}', summary="Retrieve awards for a movie or series", response_model=List[Award])
 def read_awards(imdb_id: str, locale: Optional[str] = LOCALE_QUERY):
     """Return the awards for the movie or series identified by ``imdb_id``."""
-    awards = get_awards(imdb_id, locale=locale)
+    set_locale(locale)
+    awards = get_awards(imdb_id)
     if not awards:
         raise HTTPException(status_code=404, detail="Awards not found")
     return awards
